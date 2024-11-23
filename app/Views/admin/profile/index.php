@@ -9,13 +9,18 @@
         <div class="alert alert-success"><?= session()->getFlashdata('success') ?></div>
     <?php endif; ?>
     <?php if (session()->getFlashdata('errors')) : ?>
-        <div class="alert alert-danger">
-            <ul>
-                <?php foreach (session()->getFlashdata('errors') as $error) : ?>
-                    <li><?= esc($error) ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
+        <?php $errors = session()->getFlashdata('errors'); ?>
+        <?php if (is_array($errors)) : ?>
+            <div class="alert alert-danger">
+                <ul>
+                    <?php foreach ($errors as $error) : ?>
+                        <li><?= esc($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php else : ?>
+            <div class="alert alert-danger"><?= esc($errors) ?></div>
+        <?php endif; ?>
     <?php endif; ?>
 
     <!-- Profile Display and Edit Form -->
@@ -42,6 +47,25 @@
                         id="email" 
                         name="email" 
                         value="<?= old('email', esc($user['email'] ?? '')) ?>" 
+                        required>
+                </div>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="username" 
+                        name="username" 
+                        value="<?= old('username', esc($user['username'] ?? '')) ?>" 
+                        required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input 
+                        type="password" 
+                        class="form-control" 
+                        id="password" 
+                        name="password" 
                         required>
                 </div>
                 <button type="submit" class="btn btn-primary">Update Profile</button>

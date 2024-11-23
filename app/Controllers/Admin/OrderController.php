@@ -17,16 +17,16 @@ class OrderController extends BaseController
     // Menampilkan daftar pengajuan
     public function index()
     {
-        $title = 'Daftar Pengajuan'
-        // Ambil data pengajuan dengan status "pengajuan"
-        $orders = $this->orderModel->where('status', 'pengajuan')->findAll();
+        $title = 'Daftar Pengajuan';
+        // Ambil data pengajuan dengan status "pending"
+        $orders = $this->orderModel->where('status', 'pending')->findAll();
 
         // Kirim data ke view
         $data = [
             'orders' => $orders,
         ];
 
-        return view('admin/kelola_pengajuan', $data);
+        return view('admin/order/incoming.php', $data);
     }
 
     // Menyetujui pengajuan dan mengirimkan ke halaman order Super Admin
@@ -39,7 +39,7 @@ class OrderController extends BaseController
         }
 
         // Update status menjadi "pending" (status awal di halaman Super Admin)
-        $this->orderModel->update($id, ['status' => 'pending']);
+        $this->orderModel->update($id, ['status' => 'process']);
 
         // Redirect dengan pesan sukses
         return redirect()->to(base_url('admin/orders'))->with('success', 'Pengajuan berhasil disetujui dan dikirim ke Super Admin.');
@@ -60,16 +60,22 @@ class OrderController extends BaseController
         // Redirect dengan pesan sukses
         return redirect()->to(base_url('admin/orders'))->with('success', 'Pengajuan berhasil ditolak.');
     }
+
     public function incoming()
     {
-    $incomingOrders = $this->orderModel->where('status', 'pengajuan')->findAll();
-    return view('admin/order/incoming', ['incomingOrders' => $incomingOrders]);
+        $incomingOrders = $this->orderModel->where('status', 'pengajuan')->findAll();
+        return view('admin/order/incoming', ['incomingOrders' => $incomingOrders]);
     }
 
     public function rejected()
     {
         $rejectedOrders = $this->orderModel->where('status', 'ditolak')->findAll();
-        return view('admin/rejected', ['rejectedOrders' => $rejectedOrders]);
+        return view('admin/order/rejected', ['rejectedOrders' => $rejectedOrders]);
     }
 
+    public function process()
+    {
+        $orders = $this->orderModel->whereIn('status', ['process', 'done'])->findAll();
+        return view('admin/order/process', ['orders' => $orders]);
+    }
 }

@@ -8,7 +8,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'AuthController::login');
 
 // routes satker
-$routes->group('user', ['filter' => 'auth'], function($routes) {
+$routes->group('user', ['filter' => 'auth'], function ($routes) {
     $routes->get('dashboard', 'Satker\DashboardController::index');
     $routes->get('panduan', 'Satker\PanduanController::index');
     $routes->get('Satker/PanduanController/displayPdf', 'Satker\PanduanController::displayPdf');
@@ -17,7 +17,6 @@ $routes->group('user', ['filter' => 'auth'], function($routes) {
     $routes->post('buat/create', 'Satker\BuatController::create');
     // Other admin routes...
 });
-
 
 // Authentication routes
 $routes->get('/login', 'AuthController::login');
@@ -29,7 +28,7 @@ $routes->get('/register', 'RegisterController::register');
 $routes->post('/register/attemptRegister', 'RegisterController::attemptRegister');
 
 // Admin routes
-$routes->group('admin', ['filter' => 'auth'], function($routes) {
+$routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->get('home', 'Admin\HomeController::index'); // Halaman home admin
     $routes->get('orders', 'Admin\OrderController::index'); // Daftar pengajuan
 
@@ -42,18 +41,22 @@ $routes->group('admin', ['filter' => 'auth'], function($routes) {
     $routes->get('orders/rejected', 'Admin\OrderController::rejected'); // Daftar pengajuan ditolak
 
     $routes->get('profile', 'Admin\ProfileController::profile');
-    $routes->post('profile/edit', 'Admin\ProfileController::updateProfile');
+    // $routes->post('profile/edit', 'Admin\ProfileController::updateProfile');
+
+    $routes->post('profile/update', 'Admin\ProfileController::updateProfile');
+    $routes->get('orders/process', 'Admin\OrderController::process'); // Daftar pengajuan dalam proses atau selesai
 });
 
 
 // SuperAdmin routes
-$routes->group('superadmin', ['filter' => 'auth'], function($routes) {
+$routes->group('superadmin', ['filter' => 'auth'], function ($routes) {
     $routes->get('home', 'SuperAdmin\HomeController::index');
     $routes->get('orders', 'SuperAdmin\OrderController::index');
     $routes->get('order/updateStatus/(:num)/(:alpha)', 'SuperAdmin\OrderController::updateStatus/$1/$2');
     $routes->get('orders/incoming', 'Superadmin\OrderController::incoming');
     $routes->get('orders/completed', 'superadmin\OrderController::completed');
-    $routes->get('profile', 'SuperAdminController::profile');
-    $routes->post('profile/edit', 'SuperAdminController::updateProfile');
-
+    $routes->get('profile', 'SuperAdmin\ProfileController::profile');
+    $routes->post('profile/edit', 'SuperAdmin\ProfileController::updateProfile');
+    $routes->get('superadmin/editUser/(:num)', 'SuperAdminController::editUser/$1');
+    $routes->post('superadmin/updateUser/(:num)', 'SuperAdminController::updateUser/$1');
 });

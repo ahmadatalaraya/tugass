@@ -24,38 +24,39 @@ class AuthController extends Controller
         $username = $this->request->getPost('username');
         $password = $this->request->getPost('password');
 
-        // Attempt to retrieve the user by username
+        // Coba untuk mendapatkan user berdasarkan username
         $user = $this->userModel->where('username', $username)->first();
         
-        // Check if user exists
+        // Periksa apakah user ada
         if (!$user) {
-            session()->setFlashdata('error', 'User not found.');
+            session()->setFlashdata('error', 'User tidak ditemukan.');
             return redirect()->back();
         }
         
-        // Verify the password
+        // Verifikasi password
         if (password_verify($password, $user['password'])) {
-            // Set session data
+            // Simpan data sesi
             session()->set([
                 'isLoggedIn' => true,
                 'username' => $username,
-                'role' => $user['role']
+                'role' => $user['role'],
+                'user_id' => $user['id'] // Simpan user_id untuk digunakan di ProfileController
             ]);
 
-            // Debug: Check the user's role before redirecting
+            // Debug: Periksa peran user sebelum mengarahkan
             switch (strtolower($user['role'])) {
                 case 'admin':
                     return redirect()->to(base_url('admin/home'));
-                case 'superadmin':
+                case 'super admin':
                     return redirect()->to(base_url('superadmin/home'));
                 case 'user':
                     return redirect()->to(base_url('user/dashboard'));
                 default:
-                    session()->setFlashdata('error', 'Invalid role: ' . $user['role']);
+                    session()->setFlashdata('error', 'Peran tidak valid: ' . $user['role']);
                     return redirect()->back();
             }
         } else {
-            session()->setFlashdata('error', 'Password is incorrect.');
+            session()->setFlashdata('error', 'Password salah.');
             return redirect()->back();
         }
     }

@@ -10,8 +10,8 @@ class OrderController extends BaseController
     {
         $orderModel = new OrderModel();
 
-        // Ambil semua data order
-        $orders = $orderModel->findAll();
+        // Ambil semua data order dengan status "done"
+        $orders = $orderModel->where('status', 'process')->findAll();
 
         $data = [
             'title' => 'Kelola Order - SIGAP',
@@ -26,7 +26,7 @@ class OrderController extends BaseController
         $orderModel = new OrderModel();
 
         // Validasi status
-        $validStatuses = ['pending', 'process', 'done'];
+        $validStatuses = ['pending', 'process', 'done', 'spending'];
         if (!in_array($status, $validStatuses)) {
             return redirect()->back()->with('error', 'Status tidak valid.');
         }

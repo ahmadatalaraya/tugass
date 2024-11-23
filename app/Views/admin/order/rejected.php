@@ -40,9 +40,9 @@
                             <?php if (!empty($rejectedOrders) && count($rejectedOrders) > 0): ?>
                                 <?php foreach ($rejectedOrders as $order): ?>
                                     <tr>
-                                        <td><?= $order['id'] ?></td>
-                                        <td><?= esc($order['judul_order']) ?></td>
-                                        <td><span class="badge bg-danger"><?= ucfirst($order['status']) ?></span></td>
+                                        <td><?= $order->id ?></td>
+                                        <td><?= esc($order->judul_order) ?></td>
+                                        <td><span class="badge bg-danger"><?= ucfirst($order->status) ?></span></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>

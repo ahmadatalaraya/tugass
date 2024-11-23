@@ -7,49 +7,50 @@ use App\Models\UserModel;
 
 class ProfileController extends BaseController
 {
+    protected $userModel;
+
+    public function __construct()
+    {
+        $this->userModel = new UserModel();
+    }
+
     public function profile()
     {
-        $userId = session()->get('user_id'); // Ambil user_id dari sesi
-        $userModel = new UserModel();
-
-        // Cari data pengguna berdasarkan user_id
-        $user = $userModel->find($userId);
-
-        // Cek apakah pengguna ditemukan
-        if (!$user) {
-            return redirect()->to('/admin/dashboard')->with('error', 'User not found.');
-        }
-
-        return view('admin/profile/index', ['user' => $user]);
+        $data['user'] = $this->userModel->find(session()->get('user_id'));
+        return view('admin/profile/index', $data);
     }
 
     public function updateProfile()
     {
-        $userId = session()->get('user_id'); // Ambil user_id dari sesi
-        $userModel = new UserModel();
+        $userId = session()->get('user_id');
 
-        // Validasi input form
+        // Debugging: Log userId
+        log_message('debug', 'User ID: ' . $userId);
+
+        if (!$userId) {
+            return redirect()->back()->with('errors', 'User ID not found in session.');
+        }
+
         $validation = \Config\Services::validation();
+
         $validation->setRules([
-            'nama'  => 'required|min_length[3]|max_length[50]', // Validasi untuk nama
-            'email' => 'required|valid_email',                // Validasi untuk email
+            'nama' => 'required|min_length[3]|max_length[255]',
+            'email' => 'required|valid_email|max_length[255]',
+            'username' => 'required|min_length[3]|max_length[255]',
+            'password' => 'required|min_length[6]',
         ]);
 
-        if (!$this->validate($validation->getRules())) {
+        if (!$validation->withRequest($this->request)->run()) {
             return redirect()->back()->withInput()->with('errors', $validation->getErrors());
         }
 
-        // Data yang akan diupdate
-        $data = [
-            'nama'  => $this->request->getPost('nama'),
+        $this->userModel->where('id', $userId)->set([
+            'nama' => $this->request->getPost('nama'),
             'email' => $this->request->getPost('email'),
-        ];
+            'username' => $this->request->getPost('username'),
+            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+        ])->update();
 
-        // Update data pengguna di database
-        if ($userModel->update($userId, $data)) {
-            return redirect()->to('/admin/profile')->with('success', 'Profile updated successfully.');
-        } else {
-            return redirect()->back()->with('error', 'Failed to update profile. Please try again.');
-        }
+        return redirect()->to('/admin/profile')->with('success', 'Profile updated successfully.');
     }
 }

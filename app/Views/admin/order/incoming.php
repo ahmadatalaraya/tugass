@@ -38,21 +38,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (!empty($incomingOrders) && count($incomingOrders) > 0): ?>
-                                <?php foreach ($incomingOrders as $order): ?>
+                            <?php if (!empty($orders) && count($orders) > 0): ?>
+                                <?php foreach ($orders as $order): ?>
                                     <tr>
-                                        <td><?= $order['id'] ?></td>
-                                        <td><?= esc($order['judul_order']) ?></td>
-                                        <td><span class="badge bg-warning text-dark"><?= ucfirst($order['status']) ?></span></td>
+                                        <td><?= $order->id ?></td>
+                                        <td><?= esc($order->judul_order) ?></td>
                                         <td>
-                                            <a href="<?= base_url('admin/order/approve/'.$order['id']) ?>" class="btn btn-success btn-sm" onclick="return confirm('Yakin menyetujui pengajuan ini?')">Setujui</a>
-                                            <a href="<?= base_url('admin/order/reject/'.$order['id']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin menolak pengajuan ini?')">Tolak</a>
+                                            <span class="badge bg-warning text-dark"><?= ucfirst($order->status) ?></span>
+                                        </td>
+                                        <td>
+                                            <a href="<?= base_url('admin/order/approve/'.$order->id) ?>" class="btn btn-success btn-sm" onclick="return confirm('Yakin menyetujui pengajuan ini?')">Setujui</a>
+                                            <a href="<?= base_url('admin/order/reject/'.$order->id) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin menolak pengajuan ini?')">Tolak</a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="4" class="text-center">Tidak ada pengajuan masuk.</td>
+                                    <td colspan="4" class="text-center">Tidak ada pengajuan.</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>

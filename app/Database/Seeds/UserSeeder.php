@@ -27,6 +27,15 @@ class UserSeeder extends Seeder
                 'no_wa'    => '081354969043',
                 
             ],
+            
+            [
+                'nama'     => 'admin',
+                'username' => 'admin',
+                'password' => password_hash('admin123', PASSWORD_DEFAULT),
+                'role'     => 'admin',
+                'email'    => 'admin@gmail.com',
+                'no_wa'    => '081354969043',
+            ],
         ];
 
         // Using Query Builder
